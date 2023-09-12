@@ -19,18 +19,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.tis.sqstracing;
+package uk.nhs.tis.sqstracing.event;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import static io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy.ON_SUCCESS;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SqsTracingApplication {
+import com.amazonaws.xray.spring.aop.XRayEnabled;
+import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
+import uk.nhs.tis.sqstracing.service.SqsTracingService;
 
-  public static void main(String[] args) {
-    SpringApplication.run(SqsTracingApplication.class);
+@Slf4j
+@Component
+@XRayEnabled
+public class SqsTracingListener {
+
+  private final SqsTracingService service;
+
+  public SqsTracingListener(SqsTracingService service) {
+    this.service = service;
+  }
+
+  @SqsListener(value = "${application.aws.sqs.receive-queue}", deletionPolicy = ON_SUCCESS)
+  void receiveMessage(String body,
+      @Header("AWSTraceHeader") String traceHeader) { // TODO: change this back to TraceHeader type when conversion is fixed. It's still awkward requiring a param that won't be used, not sure if there is a way to intercept the complete message within the listener.
+    service.processMessage();
   }
 }

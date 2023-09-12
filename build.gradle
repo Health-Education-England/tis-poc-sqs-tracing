@@ -1,7 +1,7 @@
 plugins {
   id "java"
-  id "org.springframework.boot" version "3.0.4"
-  id "io.spring.dependency-management" version "1.1.0"
+  id "org.springframework.boot" version "2.7.5"
+  id "io.spring.dependency-management" version "1.1.1"
 }
 
 group = "uk.nhs.tis.trainee"
@@ -17,6 +17,13 @@ repositories {
   mavenCentral()
 }
 
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+    mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:2.4.4"
+  }
+}
+
 dependencies {
   // Spring Boot starters
   implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -28,10 +35,17 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok"
 
   // MapStruct
-  ext.mapstructVersion = "1.5.3.Final"
+  ext.mapstructVersion = "1.5.5.Final"
   implementation "org.mapstruct:mapstruct:${mapstructVersion}"
   annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
   testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+  // Amazon AWS
+  implementation "io.awspring.cloud:spring-cloud-starter-aws-messaging"
+  implementation "com.amazonaws:aws-xray-recorder-sdk-spring:2.14.0"
+
+//  implementation "org.springframework.cloud:spring-cloud-starter-bootstrap"
+
 }
 
 java {

@@ -19,18 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.tis.sqstracing;
+package uk.nhs.tis.sqstracing.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import javax.annotation.PostConstruct;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.support.ConfigurableConversionService;
+import org.springframework.core.env.ConfigurableEnvironment;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SqsTracingApplication {
+@Configuration
+public class ConversionServiceConfiguration {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SqsTracingApplication.class);
+  private final ConfigurableEnvironment environment;
+
+  public ConversionServiceConfiguration(ConfigurableEnvironment environment) {
+    this.environment = environment;
+  }
+
+  @PostConstruct
+  public void addCustomConverters() {
+    ConfigurableConversionService conversionService = environment.getConversionService();
+    conversionService.addConverter(new StringToTraceHeaderConverter());
   }
 }

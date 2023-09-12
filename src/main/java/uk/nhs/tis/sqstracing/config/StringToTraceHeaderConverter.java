@@ -19,18 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.tis.sqstracing;
+package uk.nhs.tis.sqstracing.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import com.amazonaws.xray.entities.TraceHeader;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SqsTracingApplication {
+/**
+ * TODO: This converter never gets used because the param conversion is using {@link org.springframework.core.convert.support.DefaultConversionService} instead of the {@link org.springframework.core.convert.support.GenericConversionService} where this gets registered.
+ */
+@Component
+public class StringToTraceHeaderConverter implements Converter<String, TraceHeader> {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SqsTracingApplication.class);
+  @Override
+  public TraceHeader convert(String source) {
+    return TraceHeader.fromString(source);
   }
 }

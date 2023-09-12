@@ -19,18 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.tis.sqstracing;
+package uk.nhs.tis.sqstracing.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import com.amazonaws.xray.spring.aop.BaseAbstractXRayInterceptor;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SqsTracingApplication {
+@Aspect
+@Order(1)
+@Component
+public class AwsXrayInterceptor extends BaseAbstractXRayInterceptor {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SqsTracingApplication.class);
+  @Override
+  @Pointcut(
+      "@within(com.amazonaws.xray.spring.aop.XRayEnabled) && (bean(*Service) || bean(*Listener))")
+  public void xrayEnabledClasses() {
+
   }
+
 }
+

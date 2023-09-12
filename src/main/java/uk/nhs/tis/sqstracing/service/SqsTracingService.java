@@ -19,18 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package uk.nhs.tis.sqstracing;
+package uk.nhs.tis.sqstracing.service;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-@SpringBootApplication
-@EnableAutoConfiguration
-public class SqsTracingApplication {
+@Slf4j
+@Service
+@XRayEnabled
+public class SqsTracingService {
 
-  public static void main(String[] args) {
-    SpringApplication.run(SqsTracingApplication.class);
+  public void processMessage() {
+    log.info("Service called to trigger trace.");
   }
 }

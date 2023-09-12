@@ -1,31 +1,39 @@
-# TIS Microservice Template
+# TIS Proof of Concept: SQS Tracing
 
 ## About
-This is a template to be used for TIS microservices with the following
-technology:
+This is a proof of concept for continuous tracing with SQS messages.
 
- - Java 17
- - Spring Boot
- - Gradle
- - JUnit 5
+## Running
 
-Boilerplate code is to be generated with:
- - Lombok
- - MapStruct
+LocalStack cannot be used for testing as the trace header is ignored.
 
-Code quality checking and enforcement is done with the following tools:
- - EditorConfig
- - Checkstyle
- - JaCoCo
- - SonarQube
+An SQS queue (`tis-poc-sqs-tracing-receive`) has been set up, along with a
+lambda which can publish traceable messages (`tis-poc-sqs-tracing-publisher`).
 
-Error and exception logging is done using Sentry.
+Running the `EmptyInvocation` test will send a message to the queue and will be
+picked up by this service running locally.
+
+A local X-Ray daemon can be used to send the trace data to CloudWatch. For
+example, with docker compose:
+```yml
+  xray-deamon:
+    container_name: xray-deamon
+    image: amazon/aws-xray-daemon:latest
+    command: --local-mode
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION
+    ports:
+      - "2000:2000/tcp"
+      - "2000:2000/udp"
+```
+
+## Output
+![trace-result.png](trace-result.png)
 
 ## Versioning
 This project uses [Semantic Versioning](semver.org).
 
 ## License
 This project is license under [The MIT License (MIT)](LICENSE).
-
-[TemplateApplication]: src/main/java/uk/nhs/hee/tis/template/TemplateApplication.java
-[TemplateApplicationTest]: src/test/java/uk/nhs/hee/tis/template/TemplateApplicationTest.java

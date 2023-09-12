@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /sqs-tracing
+
+application:
+  aws:
+    sqs:
+      receive-queue: https://sqs.eu-west-2.amazonaws.com/430723991443/tis-poc-sqs-tracing-receive
+      send-queue: https://sqs.eu-west-2.amazonaws.com/430723991443/tis-poc-sqs-tracing-send
+
+com:
+  amazonaws:
+    xray:
+      emitters:
+        daemon-address: http://localhost:2000
