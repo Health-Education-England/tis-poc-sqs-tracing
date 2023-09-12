@@ -2,15 +2,9 @@ plugins {
   id "java"
   id "org.springframework.boot" version "3.0.4"
   id "io.spring.dependency-management" version "1.1.0"
-
-  // Code quality plugins
-  id "checkstyle"
-  id "jacoco"
-  id "org.sonarqube" version "4.0.0.2929"
 }
 
-// TODO: Update group to end with "admin" or "trainee".
-group = "uk.nhs.tis"
+group = "uk.nhs.tis.trainee"
 version = "0.0.1"
 
 configurations {
@@ -38,22 +32,6 @@ dependencies {
   implementation "org.mapstruct:mapstruct:${mapstructVersion}"
   annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
   testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-
-  // Sentry reporting
-  ext.sentryVersion = "6.11.0"
-  implementation "io.sentry:sentry-spring-boot-starter:$sentryVersion"
-  implementation "io.sentry:sentry-logback:$sentryVersion"
-}
-
-checkstyle {
-  config = resources.text.fromArchiveEntry(configurations.checkstyle[0], "google_checks.xml")
-}
-
-jacocoTestReport {
-  reports {
-    html.required = true
-    xml.required = true
-  }
 }
 
 java {
@@ -63,20 +41,6 @@ java {
   }
 }
 
-sonarqube {
-  properties {
-    property "sonar.host.url", "https://sonarcloud.io"
-    property "sonar.login", System.getenv("SONAR_TOKEN")
-    property "sonar.organization", "health-education-england"
-    // TODO: Update sonar.projectKey to real value.
-    property "sonar.projectKey", "Health-Education-England_tis-microservice-template"
-
-    property "sonar.java.checkstyle.reportPaths",
-      "build/reports/checkstyle/main.xml,build/reports/checkstyle/test.xml"
-  }
-}
-
 test {
-  finalizedBy jacocoTestReport
   useJUnitPlatform()
 }
